@@ -1,8 +1,6 @@
 package com.example.gc_androidhelper
 
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.util.Log
 import android.view.View
 import com.example.gc_androidhelper.databinding.ActivityMainBinding
@@ -24,7 +22,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         binding.tvMain.textSize = 32f
 
-        binding.tvMain.setOnClickListener { Common.takePhoto(this@MainActivity) }
+        //验证一些特殊的函数时候构建正确
+        binding.tvMain.setOnClickListener {
+            Common.selectDate(this, DateType.LINE, object : Common.IOnDateCallback {
+                override fun result(date: String) {
+                    binding.tvMain.text = date
+                }
+            })
+        }
     }
 
     private fun getUserData(view: View) {
