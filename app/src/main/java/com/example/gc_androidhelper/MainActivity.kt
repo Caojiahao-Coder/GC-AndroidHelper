@@ -26,10 +26,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         binding.tvMain.setOnClickListener {
             Common.selectDate(this, DateType.LINE, object : Common.IOnDateCallback {
                 override fun result(date: String) {
-                    binding.tvMain.text = date
+                    Common.toasts(date)
                 }
             })
         }
+
+        val name = "Great Coder"
+        Common.spWriteData("UserData", name)
+        Log.e("UserDataREAD", Common.spReadData("UserData", "").toString())
     }
 
     private fun getUserData(view: View) {

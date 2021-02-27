@@ -8,15 +8,23 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Handler
 import android.provider.MediaStore
 import android.util.Base64
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import java.io.ByteArrayOutputStream
 import java.lang.Exception
 
+/**
+ * @author Great Coder
+ * @date  2021-02-27
+ * @introduction 一个适用于全局的帮助内， 添加大量方法
+ */
 object Common {
 
+    val handler: Handler = Handler()
 
     /**
      * 一个时间选择完成的回调接口
@@ -91,17 +99,17 @@ object Common {
     /**
      * 绑定 Spinner数据
      */
-    fun <T> bindSpinnerData(context: Context, spinner: Spinner, lsData: List<T>) {
+    fun <T> bindSpinnerData(spinner: Spinner, lsData: List<T>) {
         spinner.adapter =
-            ArrayAdapter<T>(context, android.R.layout.simple_dropdown_item_1line, lsData)
+            ArrayAdapter<T>(App.getContext(), android.R.layout.simple_dropdown_item_1line, lsData)
     }
 
     /**
      * 写入 Sp数据 支持全部格式
      */
     @SuppressLint("CommitPrefEdits")
-    fun spWriteData(context: Context, name: String, content: Any) {
-        val sharedPreferences = context.getSharedPreferences(name, Context.MODE_PRIVATE)
+    fun spWriteData(name: String, content: Any) {
+        val sharedPreferences = App.getContext().getSharedPreferences(name, Context.MODE_PRIVATE)
 
         val editor = sharedPreferences.edit()
 
@@ -122,14 +130,18 @@ object Common {
                 editor.putFloat(name, content)
             }
         }
+
+        //2021-02-27 修复 未添加commit 导致无法保存
+        editor.commit()
     }
 
     /**
      * 读取 Sp数据 支持全部格式
      */
-    fun spReadData(context: Context, name: String, content: Any): Any? {
-        val sharedPreferences = context.getSharedPreferences(name, Context.MODE_PRIVATE)
+    fun spReadData(name: String, content: Any): Any? {
+        val sharedPreferences = App.getContext().getSharedPreferences(name, Context.MODE_PRIVATE)
 
+        //利用 kotlin 的特性
         when (content) {
             is String -> {
                 return sharedPreferences.getString(name, content)
@@ -148,5 +160,22 @@ object Common {
             }
         }
         return null
+    }
+
+    /**
+     * 清除 sp缓存中的 $name 数据
+     */
+    fun spClearData(name: String) {
+        val sharedPreferences = App.getContext().getSharedPreferences(name, Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.commit()
+    }
+
+    /**
+     * 一般适用于kotlin 开发的情况下
+     */
+    fun toasts(content: String) {
+        handler.post { Toast.makeText(App.getContext(), content, Toast.LENGTH_SHORT).show() }
     }
 }
