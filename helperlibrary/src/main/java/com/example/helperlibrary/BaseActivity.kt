@@ -17,6 +17,8 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         mBinding = getViewBinding()
         setContentView(mBinding.root)
         initialize()
+
+
     }
 
     protected abstract fun getViewBinding(): VB
